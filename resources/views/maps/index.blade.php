@@ -98,8 +98,13 @@
             </div>
         </div>
         <div class="filter-section">
-            <form method="GET" action="{{ route('pemetaan.index') }}" class="row g-3">
-                <div class="col-md-5">
+            <form method="GET" action="{{ route('pemetaan.index') }}" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label for="search" class="form-label">Cari Wisata</label>
+                    <input type="search" name="search" id="search" class="form-control"
+                        placeholder="Contoh: Pantai, Museum..." value="{{ request('search') }}">
+                </div>
+                <div class="col-md-3">
                     <label for="jenis_id" class="form-label">Jenis Wisata</label>
                     <select name="jenis_id" id="jenis_id" class="form-select">
                         <option value="">-- Semua Jenis Wisata --</option>
@@ -110,7 +115,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-3">
                     <label for="kecamatan_id" class="form-label">Kecamatan</label>
                     <select name="kecamatan_id" id="kecamatan_id" class="form-select">
                         <option value="">-- Semua Kecamatan --</option>
@@ -121,11 +126,12 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-2 d-flex align-items-end">
+                <div class="col-md-2">
                     <button type="submit" class="btn btn-primary w-100">Terapkan</button>
                 </div>
-                @if (request('jenis_id') || request('kecamatan_id'))
-                    <div class="col-12 mt-3">
+
+                @if (request('search') || request('jenis_id') || request('kecamatan_id'))
+                    <div class="col-12 mt-2">
                         <a href="{{ route('pemetaan.index') }}" class="btn btn-sm btn-outline-secondary">Reset Filter</a>
                     </div>
                 @endif
@@ -197,6 +203,7 @@
                 attribution: '© OpenStreetMap contributors',
                 maxZoom: 19
             }).addTo(map);
+
 
             const wisataData = @json($daftar_wisata);
 

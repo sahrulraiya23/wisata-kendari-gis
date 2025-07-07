@@ -16,6 +16,15 @@ class MapsController extends Controller
 
         $query = Pariwisata::query();
 
+        // Filter berdasarkan kata kunci pencarian
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                    ->orWhere('deskripsi', 'like', "%{$search}%");
+            });
+        }
+
         // Filter jenis wisata kalau ada input
         if ($request->filled('jenis_id')) {
             $query->where('jenis_id', $request->jenis_id);
