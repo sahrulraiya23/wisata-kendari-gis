@@ -1,246 +1,150 @@
 @extends('layouts.app')
 
-@section('title', $wisata->nama)
-
-@section('styles')
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-
-    <style>
-        .detail-card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            padding: 25px;
-            margin-bottom: 20px;
-        }
-
-        .hero-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 40px 0;
-            margin-bottom: 30px;
-            border-radius: 0 0 20px 20px;
-        }
-
-        .tourism-image {
-            border-radius: 15px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            transition: transform 0.3s ease;
-        }
-
-        .tourism-image:hover {
-            transform: scale(1.02);
-        }
-
-        .info-item {
-            margin-bottom: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
-        }
-
-        .info-title {
-            color: #495057;
-            font-weight: 600;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .info-content {
-            color: #6c757d;
-            margin: 0;
-            line-height: 1.6;
-        }
-
-        .rating-display {
-            display: inline-flex;
-            align-items: center;
-            background: #fff3cd;
-            padding: 8px 15px;
-            border-radius: 25px;
-            border: 2px solid #ffc107;
-        }
-
-        .map-container {
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .back-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 50px;
-            padding: 12px 25px;
-            color: white;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        .back-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-            color: white;
-            text-decoration: none;
-        }
-
-        .badge-custom {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-        }
-    </style>
-@endsection
+@section('title', 'Detail Wisata: ' . $wisata->nama)
 
 @section('content')
-    {{-- Hero Section --}}
-    <div class="hero-section">
-        <div class="container" style="margin-top: 100px;">
-            <div class="text-center">
-                <h1 class="display-5 fw-bold mb-2">
-                    <i class="fas fa-map-marker-alt me-3"></i>{{ $wisata->nama }}
-                </h1>
-                <p class="lead opacity-90">Jelajahi keindahan destinasi wisata terbaik</p>
+    <main id="main">
+
+        <div class="container d-flex justify-content-center" style="padding-top: 100px;">
+            <div class="row text-center">
+                <h2 class="fw-bold text-primary">
+                    <i class="fas fa-map-marked-alt me-2"></i>
+                    {{-- Menampilkan nama wisata secara dinamis --}}
+                    {{ $wisata->nama }}
+                </h2>
+                <p class="text-muted">Jelajahi detail destinasi wisata menarik di daerah kami.</p>
             </div>
         </div>
-    </div>
 
-    <div class="container">
-        <div class="row">
-            {{-- Bagian Info Detail --}}
-            <div class="col-lg-6 mb-4">
-                <div class="detail-card">
-                    @if ($wisata->gambar)
-                        <img src="{{ asset('storage/' . $wisata->gambar) }}" alt="{{ $wisata->nama }}"
-                            class="img-fluid tourism-image mb-4 w-100" style="max-height: 300px; object-fit: cover;">
-                    @endif
+        <section id="portfolio-details" class="portfolio-details section">
+            <div class="container" data-aos="fade-up">
 
-                    <div class="info-item">
-                        <div class="info-title">
-                            <i class="fas fa-tag text-primary"></i>
-                            <strong>Jenis Wisata</strong>
+                <div class="row gy-4">
+                    <div class="col-lg-7">
+                        <div class="portfolio-details-slider swiper rounded shadow-lg">
+                            <div class="swiper-wrapper align-items-center">
+                                @if ($wisata->gambar)
+                                    <div class="swiper-slide">
+                                        <img src="{{ asset('storage/' . $wisata->gambar) }}" alt="{{ $wisata->nama }}"
+                                            class="img-fluid">
+                                    </div>
+                                @else
+                                    <div class="swiper-slide">
+                                        <div class="bg-light d-flex align-items-center justify-content-center"
+                                            style="height: 450px;">
+                                            <i class="bi bi-image-alt fs-1 text-muted"></i>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="swiper-pagination"></div>
                         </div>
-                        <p class="info-content">
-                            <span class="badge-custom">{{ $wisata->jenis->nama }}</span>
-                        </p>
                     </div>
 
-                    <div class="info-item">
-                        <div class="info-title">
-                            <i class="fas fa-building text-success"></i>
-                            <strong>Kecamatan</strong>
-                        </div>
-                        <p class="info-content">{{ $wisata->kecamatan->nama }}</p>
-                    </div>
-
-                    <div class="info-item">
-                        <div class="info-title">
-                            <i class="fas fa-map-marker-alt text-danger"></i>
-                            <strong>Alamat</strong>
-                        </div>
-                        <p class="info-content">{{ $wisata->alamat }}</p>
-                    </div>
-
-                    <div class="info-item">
-                        <div class="info-title">
-                            <i class="fas fa-info-circle text-info"></i>
-                            <strong>Deskripsi</strong>
-                        </div>
-                        <p class="info-content">{{ $wisata->deskripsi }}</p>
-                    </div>
-
-                    <div class="info-item">
-                        <div class="info-title">
-                            <i class="fas fa-star text-warning"></i>
-                            <strong>Rating</strong>
-                        </div>
-                        <div class="rating-display">
-                            <i class="fas fa-star text-warning me-2"></i>
-                            <span class="fw-bold">{{ number_format($wisata->rating, 1) }}</span>
-                            <span class="ms-1 text-muted">/ 5.0</span>
+                    <div class="col-lg-5">
+                        <div class="portfolio-info card shadow-lg h-100">
+                            <div class="card-header bg-primary text-white">
+                                <h3 class="card-title mb-0"><i class="bi bi-info-circle-fill me-2"></i>Informasi Destinasi
+                                </h3>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span><i class="bi bi-tag-fill me-2 text-primary"></i><strong>Jenis
+                                                Wisata</strong></span>
+                                        <span class="badge bg-info text-dark rounded-pill">{{ $wisata->jenis->nama }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span><i
+                                                class="bi bi-geo-alt-fill me-2 text-success"></i><strong>Kecamatan</strong></span>
+                                        <span>{{ $wisata->kecamatan->nama }}</span>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <p class="mb-1"><i
+                                                class="bi bi-pin-map-fill me-2 text-danger"></i><strong>Alamat</strong></p>
+                                        <p class="mb-0 text-muted small">{{ $wisata->alamat }}</p>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <p class="mb-1"><i class="bi bi-clock-fill me-2 text-info"></i><strong>Jam
+                                                Operasional</strong></p>
+                                        <p class="mb-0 text-muted">
+                                            {{ $wisata->jam_operasional ?? 'Informasi tidak tersedia' }}</p>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <p class="mb-1"><i class="bi bi-cash-coin me-2 text-warning"></i><strong>Harga
+                                                Tiket</strong></p>
+                                        <p class="mb-0 text-muted fw-bold">
+                                            {{ 'Rp ' . number_format($wisata->harga_tiket, 0, ',', '.') }}</p>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span><i class="bi bi-star-half me-2 text-warning"></i><strong>Rating
+                                                Pengunjung</strong></span>
+                                        <span class="fw-bold h5 text-warning mb-0">{{ number_format($wisata->rating, 1) }}
+                                            / 5.0</span>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            {{-- Bagian Peta --}}
-            <div class="col-lg-6 mb-4">
-                <div class="detail-card">
-                    <div class="info-title mb-3">
-                        <i class="fas fa-map text-primary"></i>
-                        <strong>Peta Lokasi</strong>
+                <div class="row mt-5">
+                    <div class="col-lg-7">
+                        <div class="card shadow-lg">
+                            <div class="card-body p-4">
+                                <h4 class="card-title">Tentang {{ $wisata->nama }}</h4>
+                                <p class="card-text" style="text-align: justify;">
+                                    {!! nl2br(e($wisata->deskripsi)) !!}
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="map-container">
-                        <div id="map" style="height: 400px; width: 100%;"></div>
-                    </div>
-                    <div class="mt-3 text-center">
-                        <small class="text-muted">
-                            <i class="fas fa-info-circle me-1"></i>
-                            Klik marker untuk melihat detail lokasi
-                        </small>
+
+                    <div class="col-lg-5">
+                        <div class="card shadow-lg h-100">
+                            <div class="card-body p-4">
+                                <h4 class="card-title">Lokasi di Peta</h4>
+                                <div id="map" style="height: 300px; width: 100%; border-radius: 8px; z-index: 1;">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+                <div class="text-center mt-5">
+                    <a href="{{ route('pariwisata.index') }}" class="btn btn-primary btn-lg">
+                        <i class="bi bi-arrow-left-circle me-2"></i>
+                        Kembali ke Daftar Wisata
+                    </a>
+                </div>
+
             </div>
-        </div>
-
-        {{-- Back Button --}}
-        <div class="text-center mt-4 mb-5">
-            <a href="{{ route('pariwisata.index') }}" class="btn btn-primary">
-                <i class="fas fa-arrow-left"></i>
-                Kembali ke Daftar Wisata
-            </a>
-        </div>
-    </div>
-
+        </section>
+    </main>
 @endsection
 
+@push('styles')
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+@endpush
+
 @push('scripts')
-    <!-- Leaflet JavaScript -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Create map after DOM is fully loaded
-            var map = L.map('map').setView([{{ $wisata->latitude }}, {{ $wisata->longitude }}], 15);
+            var lat = {{ $wisata->latitude }};
+            var lng = {{ $wisata->longitude }};
+            var nama = "{{ $wisata->nama }}";
+
+            var map = L.map('map').setView([lat, lng], 15);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap contributors',
-                maxZoom: 19
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
 
-            // Custom marker icon
-            var customIcon = L.divIcon({
-                html: '<i class="fas fa-map-marker-alt" style="color: #dc3545; font-size: 24px;"></i>',
-                iconSize: [20, 20],
-                className: 'custom-div-icon'
-            });
-
-            L.marker([{{ $wisata->latitude }}, {{ $wisata->longitude }}], {
-                    icon: customIcon
-                }).addTo(map)
-                .bindPopup(`
-                    <div style="text-align: center; padding: 10px;">
-                        <h6 style="margin: 0 0 5px 0; color: #495057;"><b>{{ $wisata->nama }}</b></h6>
-                        <p style="margin: 0; color: #6c757d; font-size: 0.9rem;">{{ $wisata->alamat }}</p>
-                        <div style="margin-top: 8px;">
-                            <span style="background: #667eea; color: white; padding: 3px 8px; border-radius: 10px; font-size: 0.8rem;">
-                                {{ $wisata->jenis->nama }}
-                            </span>
-                        </div>
-                    </div>
-                `)
+            L.marker([lat, lng]).addTo(map)
+                .bindPopup(`<b>${nama}</b>`)
                 .openPopup();
         });
     </script>

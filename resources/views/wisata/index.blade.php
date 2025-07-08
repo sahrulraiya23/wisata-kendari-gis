@@ -15,94 +15,101 @@
 
             </div>
         </div>
+        <main id="main">
 
-        <!-- Table Section -->
-        <div class="card shadow-sm">
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th class="fw-bold" width="5%">#</th>
-                                <th class="fw-bold" width="12%">Foto</th>
-                                <th class="fw-bold" width="15%">Nama Wisata</th>
-                                <th class="fw-bold" width="10%">Jenis Wisata</th>
-                                <th class="fw-bold" width="10%">Kecamatan</th>
-                                <th class="fw-bold" width="15%">Alamat</th>
-                                <th class="fw-bold" width="15%">Deskripsi</th>
-                                <th class="fw-bold" width="8%">Rating</th>
-                                <th class="fw-bold" width="10%">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($daftar_wisata as $index => $wisata)
-                                <tr>
-                                    <td class="align-middle">{{ $index + 1 }}</td>
-                                    <td class="align-middle">
-                                        @if ($wisata->gambar)
-                                            <img src="{{ asset('storage/' . $wisata->gambar) }}" alt="{{ $wisata->nama }}"
-                                                class="img-thumbnail"
-                                                style="width: 100px; height: 70px; object-fit: cover;">
-                                        @else
-                                            <div class="bg-light text-center py-3 rounded">
-                                                <i class="fas fa-image text-muted"></i>
-                                            </div>
-                                        @endif
-                                    </td>
-                                    <td class="align-middle fw-bold">{{ $wisata->nama }}</td>
-                                    <td class="align-middle">
-                                        <span class="badge bg-primary">{{ $wisata->jenis->nama }}</span>
-                                    </td>
-                                    <td class="align-middle">{{ $wisata->kecamatan->nama }}</td>
-                                    <td class="align-middle small">{{ Str::limit($wisata->alamat, 50, '...') }}</td>
-                                    <td class="align-middle small">{{ Str::limit($wisata->deskripsi, 100, '...') }}</td>
-                                    <td class="align-middle">
-                                        <div class="d-flex align-items-center">
-                                            <i class="fas fa-star text-warning me-1"></i>
-                                            <span>{{ number_format($wisata->rating, 1) }}</span>
-                                        </div>
-                                    </td>
-                                    <td class="align-middle">
-                                        <a href="{{ route('pariwisata.show', $wisata->id) }}"
-                                            class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-info-circle me-1"></i>Detail
-                                        </a>
 
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="9" class="text-center py-4">
-                                        <i class="fas fa-info-circle me-1"></i>
-                                        Data wisata tidak tersedia.
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+            <section id="wisata-table" class="wisata-table section">
+                <div class="container" data-aos="fade-up">
+                    <div class="card shadow-lg border-0">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0"><i class="bi bi-list-ul me-2"></i>Data Pariwisata</h5>
+                            <div class="col-md-5">
+                                <form action="{{ route('pariwisata.index') }}" method="GET">
+                                    <div class="input-group">
+                                        <input type="text" name="search" class="form-control"
+                                            placeholder="Cari nama wisata..." value="{{ request('search') }}">
+                                        <button class="btn btn-light" type="submit" id="button-addon2"><i
+                                                class="bi bi-search"></i></button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-striped align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th scope="col" width="5%">#</th>
+                                            <th scope="col" width="10%">Foto</th>
+                                            <th scope="col" width="15%">Nama Wisata</th>
+                                            <th scope="col" width="10%">Jenis</th>
+                                            <th scope="col" width="10%">Kecamatan</th>
+                                            <th scope="col" width="25%">Alamat</th>
+                                            <th scope="col" width="10%">Rating</th>
+                                            <th scope="col" class="text-center" width="15%">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($daftar_wisata as $index => $wisata)
+                                            <tr>
+                                                {{-- Penomoran yang benar untuk paginasi --}}
+                                                <td>{{ $daftar_wisata->firstItem() + $index }}</td>
+                                                <td>
+                                                    @if ($wisata->gambar)
+                                                        <img src="{{ asset('storage/' . $wisata->gambar) }}"
+                                                            alt="{{ $wisata->nama }}" class="img-fluid rounded"
+                                                            style="width: 100px; height: 70px; object-fit: cover;">
+                                                    @else
+                                                        <div class="rounded bg-light d-flex align-items-center justify-content-center"
+                                                            style="width: 100px; height: 70px;">
+                                                            <i class="bi bi-image text-muted"></i>
+                                                        </div>
+                                                    @endif
+                                                </td>
+                                                <td class="fw-bold">{{ $wisata->nama }}</td>
+                                                <td><span class="badge bg-info text-dark">{{ $wisata->jenis->nama }}</span>
+                                                </td>
+                                                <td>{{ $wisata->kecamatan->nama }}</td>
+                                                <td class="small">{{ $wisata->alamat }}</td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="bi bi-star-fill text-warning me-1"></i>
+                                                        <span>{{ number_format($wisata->rating, 1) }}</span>
+                                                    </div>
+                                                </td>
+                                                <td class="text-center">
+                                                    <a href="{{ route('pariwisata.show', $wisata->id) }}"
+                                                        class="btn btn-sm btn-primary">
+                                                        <i class="bi bi-info-circle me-1"></i>Detail
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="8" class="text-center py-5">
+                                                    <h5 class="text-muted">Data Tidak Ditemukan</h5>
+                                                    <p>Saat ini belum ada data wisata yang tersedia atau cocok dengan
+                                                        pencarian
+                                                        Anda.</p>
+                                                </td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        @if ($daftar_wisata->hasPages())
+                            <div class="card-footer bg-light">
+                                <div class="d-flex justify-content-center">
+                                    {{-- Menambahkan query string pencarian ke link paginasi --}}
+                                    {{ $daftar_wisata->appends(request()->query())->links() }}
+                                </div>
+                            </div>
+                        @endif
+
+                    </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Pagination if needed -->
-        @if (isset($daftar_wisata) && method_exists($daftar_wisata, 'hasPages') && $daftar_wisata->hasPages())
-            <div class="d-flex justify-content-center mt-4">
-                {{ $daftar_wisata->links() }}
-            </div>
-        @endif
-    </div>
-
-    @push('styles')
-        <style>
-            .table th,
-            .table td {
-                padding: 0.75rem;
-                vertical-align: middle;
-            }
-
-            .img-thumbnail {
-                border-radius: 6px;
-            }
-        </style>
-    @endpush
-@endsection
+            </section>
+        </main>
+    @endsection

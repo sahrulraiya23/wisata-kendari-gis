@@ -8,12 +8,30 @@ use Illuminate\Support\Facades\Storage;
 
 class PariwisataController extends Controller
 {
-    public function index()
+    /**
+     * Menampilkan daftar data pariwisata dengan paginasi dan fitur pencarian.
+     */
+    public function index(Request $request)
     {
-        $daftar_wisata = Pariwisata::latest()->get();
+        // Query dasar untuk mengambil data, diurutkan dari yang terbaru
+        $query = Pariwisata::latest();
+
+        // Logika untuk fitur pencarian
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where('nama', 'like', '%' . $search . '%')
+                ->orWhere('alamat', 'like', '%' . $search . '%');
+        }
+
+        // Gunakan .paginate() untuk membuat paginasi (misal: 10 item per halaman)
+        $daftar_wisata = $query->paginate(10);
+
         return view('wisata.index', compact('daftar_wisata'));
     }
 
+    /**
+     * Menampilkan detail satu data pariwisata.
+     */
     public function show($id)
     {
         // Ambil 1 data wisata berdasarkan id dengan relasi kecamatan dan jenis
@@ -22,78 +40,12 @@ class PariwisataController extends Controller
         // Kirim ke view detail
         return view('wisata.show', compact('wisata'));
     }
-    // public function create()
-    // {
-    //     return view('wisata.create');
-    // }
 
-    // public function store(Request $request)
-    // {
-    //     $validated = $request->validate([
-    //         'nama' => 'required',
-    //         'jenis' => 'required',
-    //         'alamat' => 'required',
-    //         'kecamatan' => 'required',
-    //         'deskripsi' => 'nullable',
-    //         'foto' => 'nullable|image|max:2048',
-    //     ]);
+    // --- Method lainnya bisa Anda aktifkan kembali nanti jika dibutuhkan ---
 
-    //     if ($request->hasFile('foto')) {
-    //         $validated['foto'] = $request->file('foto')->store('foto-pariwisata', 'public');
-    //     }
-
-    //     Pariwisata::create($validated);
-
-    //     return redirect()->route('pariwisata.index')->with('success', 'Data berhasil ditambahkan.');
-    // }
-
-    // public function show($id)
-    // {
-    //     $data = Pariwisata::findOrFail($id);
-    //     return view('wisata.show', compact('data'));
-    // }
-
-    // public function edit($id)
-    // {
-    //     $data = Pariwisata::findOrFail($id);
-    //     return view('wisata.edit', compact('data'));
-    // }
-
-    // public function update(Request $request, $id)
-    // {
-    //     $data = Pariwisata::findOrFail($id);
-
-    //     $validated = $request->validate([
-    //         'nama' => 'required',
-    //         'jenis' => 'required',
-    //         'alamat' => 'required',
-    //         'kecamatan' => 'required',
-    //         'deskripsi' => 'nullable',
-    //         'foto' => 'nullable|image|max:2048',
-    //     ]);
-
-    //     if ($request->hasFile('foto')) {
-    //         if ($data->foto) {
-    //             Storage::disk('public')->delete($data->foto);
-    //         }
-    //         $validated['foto'] = $request->file('foto')->store('foto-pariwisata', 'public');
-    //     }
-
-    //     $data->update($validated);
-
-    //     return redirect()->route('pariwisata.index')->with('success', 'Data berhasil diperbarui.');
-    // }
-
-    // public function destroy($id)
-    // {
-    //     $data = Pariwisata::findOrFail($id);
-
-    //     if ($data->foto) {
-    //         Storage::disk('public')->delete($data->foto);
-    //     }
-
-    //     $data->delete();
-
-    //     return redirect()->route('pariwisata.index')->with('success', 'Data berhasil dihapus.');
-    // }
+    // public function create() { ... }
+    // public function store(Request $request) { ... }
+    // public function edit($id) { ... }
+    // public function update(Request $request, $id) { ... }
+    // public function destroy($id) { ... }
 }
