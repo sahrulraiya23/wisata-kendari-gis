@@ -114,8 +114,8 @@ pemetaan-wisata-GIS/
 
 ## 📞 Contact
 
-**Developer:** Manzadhit  
-**Repository:** [pemetaan-wisata-GIS](https://github.com/manzadhit/pemetaan-wisata-GIS)
+**Developer:** King Sahrul 
+**Repository:** [pemetaan-wisata-GIS](https://github.com/sahrulraiya23/wisata-kendari-gis)
 
 ---
 
